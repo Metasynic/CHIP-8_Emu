@@ -10,6 +10,7 @@ public:
     int getWidth();
     int getHeight();
     void memory_init();
+    void process_instruction();
 
 private:
     static const int SCR_WIDTH = 64;

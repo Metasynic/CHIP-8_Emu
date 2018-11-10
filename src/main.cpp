@@ -27,7 +27,7 @@ bool sdl_init(SDL_Window *window, SDL_Renderer *renderer, int scale, int width, 
     return true;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     SDL_Window* window;
     SDL_Renderer* renderer;
     const int SCALE = 16;
@@ -43,7 +43,7 @@ int main() {
     chip8->memory_init();
 
     while (!quit) {
-
+        chip8->process_instruction();
 
         while(SDL_PollEvent(&event) != 0) {
             if(event.type == SDL_QUIT) {
