@@ -65,76 +65,76 @@ void CHIP8::process_instruction() {
 
     // SE - Skip next instruction if register in second nibble is equal to third and fourth nibbles
     else if ((instruction & 0xF000) == 0x3000) {
-        if (v[instruction & 0x0F00] == (instruction & 0x00FF)) {
+        if (v[(instruction & 0x0F00) >> 8] == (instruction & 0x00FF)) {
             pc += 4;
         }
     }
 
     // SNE - Skip next instruction if register in second nibble is not equal to third and fourth nibbles
     else if ((instruction & 0xF000) == 0x4000) {
-        if (v[instruction & 0x0F00] != (instruction & 0x00FF)) {
+        if (v[(instruction & 0x0F00) >> 8] != (instruction & 0x00FF)) {
             pc += 4;
         }
     }
 
     // SE - Skip next instruction if register in second nibble is equal to register in third nibble
     else if ((instruction & 0xF00F) == 0x5000) {
-        if (v[instruction & 0x0F00] == v[instruction & 0x00F0]) {
+        if (v[(instruction & 0x0F00) >> 8] == v[instruction & 0x00F0 >> 4]) {
             pc += 4;
         }
     }
 
     // LD - Load value in third and fourth nibbles into register in second nibble
     else if ((instruction & 0xF000) == 0x6000) {
-        v[(instruction & 0x0F00)] = instruction & 0x00FF;
+        v[(instruction & 0x0F00) >> 8] = instruction & 0x00FF;
         pc += 2;
     }
 
     // ADD - Add value in third and fourth nibbles to register in second nibble
     else if ((instruction & 0xF000) == 0x7000) {
-        v[instruction & 0x0F00] += instruction & 0x00FF;
+        v[(instruction & 0x0F00) >> 8] += instruction & 0x00FF;
         pc += 2;
     }
 
     // LD - Load value of register in third nibble into register in second nibble
     else if ((instruction & 0xF00F) == 0x8000) {
-        v[instruction & 0x0F00] = v [instruction & 0x00F0];
+        v[(instruction & 0x0F00) >> 8] = v [instruction & 0x00F0 >> 4];
         pc += 2;
     }
 
     // OR - Bitwise OR of register in second and register in third nibbles, store result in second-nibble register
     else if ((instruction & 0xF00F) == 0x8001) {
-        v[instruction & 0x0F00] |= v[instruction & 0x00F0];
+        v[(instruction & 0x0F00) >> 8] |= v[instruction & 0x00F0 >> 4];
         pc += 2;
     }
 
     // AND - Bitwise AND of register in second and register in third nibbles, store result in second-nibble register
     else if ((instruction & 0xF00F) == 0x8002) {
-        v[instruction & 0x0F00] &= v[instruction & 0x00F0];
+        v[(instruction & 0x0F00) >> 8] &= v[instruction & 0x00F0 >> 4];
         pc += 2;
     }
 
     // XOR - Bitwise XOR of register in second and register in third nibbles, store result in second-nibble register
     else if ((instruction & 0xF00F) == 0x8003) {
-        v[instruction & 0x0F00] ^= v[instruction & 0x00F0];
+        v[(instruction & 0x0F00) >> 8] ^= v[instruction & 0x00F0 >> 4];
         pc += 2;
     }
 
     // ADD - Addition of register in second and register in third nibbles, store result in second-nibble register
     // V[F] is used as the carry bit register
     else if ((instruction & 0xF00F) == 0x8004) {
-        int temp = v[instruction & 0x0F00] + v[instruction & 0x00F0];
+        int temp = v[instruction & 0x0F00 >> 8] + v[instruction & 0x00F0 >> 4];
         v[0xF] = (temp > 0xFF) ? 1 : 0;
-        v[instruction & 0x0F00] = temp & 0xFF;
+        v[(instruction & 0x0F00) >> 8] = temp & 0xFF;
         pc += 2;
     }
 
-    // SUB - Addition of register in third from register in second nibbles, store result in second-nibble register
+    // SUB - Subtraction of register in third from register in second nibbles, store result in second-nibble register
     // V[F] is used as the carry bit register
     else if ((instruction & 0xF00F) == 0x8005) {
         int temp = v[instruction & 0x0F00] - v[instruction & 0x00F0];
         v[0xF] = (temp > 0) ? 1 : 0;
-        v[instruction & 0x0F00] = temp & 0xFF;
+        v[(instruction & 0x0F00) >> 8] = temp & 0xFF;
         pc += 2;
     }
 
@@ -142,5 +142,15 @@ void CHIP8::process_instruction() {
     else if ((instruction & 0xF00F) == 0x8005) {
         v[0xF] = (v[instruction & 0x0001] == 1) ? 1 : 0;
         v[instruction & 0x0F00] /= 2;
+    }
+
+
+    // SUBN - Subtraction of register in second from register in third nibbles, store result in second-nibble register
+    // V[F] is used as the carry bit register
+    else if ((instruction & 0xF00F) == 0x8006) {
+        int temp = v[instruction & 0x00F0] - v[instruction & 0x0F00];
+        v[0xF] = (temp > 0) ? 1 : 0;
+        v[(instruction & 0x0F00) >> 8] = temp & 0xFF;
+        pc += 2;
     }
 }
