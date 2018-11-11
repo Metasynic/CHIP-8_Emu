@@ -22,6 +22,7 @@ private:
     char soundTimer;
     short int pc;
     char sp;
+    short int reg_i;
     char mem[MEM_LENGTH];
     char v[V_LENGTH];
     short int stack[STACK_LENGTH];
