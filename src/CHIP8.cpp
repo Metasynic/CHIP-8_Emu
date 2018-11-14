@@ -40,9 +40,10 @@ void CHIP8::process_instruction() {
 
     // CLS - Clear Display
     if (inst == 0x00E0) {
-        for (int i = 0; i < SCR_WIDTH * SCR_HEIGHT; i++) {
+        for (int i = 0; i < SCR_WIDTH * SCR_HEIGHT; i++)
             screen[i] = false;
-        }
+
+        pc += 2;
     }
 
     // RET - Return from current subroutine
@@ -65,23 +66,26 @@ void CHIP8::process_instruction() {
 
     // SE - Skip next instruction if register in second nibble is equal to third and fourth nibbles
     else if ((inst & 0xF000) == 0x3000) {
-        if (v[(inst & 0x0F00) >> 8] == (inst & 0x00FF)) {
+        if (v[(inst & 0x0F00) >> 8] == (inst & 0x00FF))
             pc += 4;
-        }
+        else
+            pc += 2;
     }
 
     // SNE - Skip next instruction if register in second nibble is not equal to third and fourth nibbles
     else if ((inst & 0xF000) == 0x4000) {
-        if (v[(inst & 0x0F00) >> 8] != (inst & 0x00FF)) {
+        if (v[(inst & 0x0F00) >> 8] != (inst & 0x00FF))
             pc += 4;
-        }
+        else
+            pc += 2;
     }
 
     // SE - Skip next instruction if register in second nibble is equal to register in third nibble
     else if ((inst & 0xF00F) == 0x5000) {
-        if (v[(inst & 0x0F00) >> 8] == v[inst & 0x00F0 >> 4]) {
+        if (v[(inst & 0x0F00) >> 8] == v[inst & 0x00F0 >> 4])
             pc += 4;
-        }
+        else
+            pc += 2;
     }
 
     // LD - Load value in third and fourth nibbles into register in second nibble
@@ -142,6 +146,7 @@ void CHIP8::process_instruction() {
     else if ((inst & 0xF00F) == 0x8005) {
         v[0xF] = v[inst & 0x0001];
         v[(inst & 0x0F00) >> 8] /= 2;
+        pc += 2;
     }
 
 
@@ -158,5 +163,31 @@ void CHIP8::process_instruction() {
     else if ((inst & 0xF00F) == 0x800E) {
         v[0xF] = v[(inst & 0x8000) >> 15];
         v[(inst & 0x0F00) >> 8] *= 2;
+        pc += 2;
+    }
+
+    // SNE - Skip next instruction if second nibble register is not equal to third nibble register
+    else if ((inst & 0xF00F) == 0x9000) {
+        if (v[(inst & 0x0F00) >> 8] != v[(inst & 0x00F0) >> 4])
+            pc += 4;
+        else
+            pc += 2;
+    }
+
+    // LD I - Load the value represented by the last three nibbles into register I
+    else if ((inst & 0xF000) == 0xA000) {
+        reg_i = inst & 0x0FFF;
+        pc += 2;
+    }
+
+    // JMP V0 - Jump to location in last three nibbles plus the value of register V0
+    else if ((inst & 0xF000) == 0xB000) {
+        pc = (inst & 0x0FFF) + v[0x0];
+    }
+
+    // RND - Generate a random byte, AND it with the last two nibbles of the instruction,
+    // and store in the second-nibble register
+    else if ((inst & 0xF000) == 0xC000) {
+
     }
 }
