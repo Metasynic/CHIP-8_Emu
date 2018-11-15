@@ -11,8 +11,10 @@ public:
     int getHeight();
     void memory_init();
     void process_instruction();
-
 private:
+    bool draw_pixel(int x, int y);
+    void character_init();
+
     static const int SCR_WIDTH = 64;
     static const int SCR_HEIGHT = 32;
     static const int MEM_LENGTH = 4096;

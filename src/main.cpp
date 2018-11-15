@@ -4,7 +4,7 @@
 
 using namespace std;
 
-bool sdl_init(SDL_Window *window, SDL_Renderer *renderer, int scale, int width, int height) {
+bool sdl_init(SDL_Window* window, SDL_Renderer* renderer, int scale, int width, int height) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         cerr << "SDL_Init Error: " << SDL_GetError() << endl;
         return false;
