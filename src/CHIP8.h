@@ -12,7 +12,7 @@ public:
     void memory_init();
     void process_instruction();
 private:
-    bool draw_pixel(int x, int y);
+    bool draw_xor(int x, int y, bool pixel);
     void character_init();
 
     static const int SCR_WIDTH = 64;
@@ -20,14 +20,16 @@ private:
     static const int MEM_LENGTH = 4096;
     static const int V_LENGTH = 16;
     static const int STACK_LENGTH = 16;
+    static const int KEYS_LENGTH = 16;
     char delayTimer;
     char soundTimer;
     short int pc;
     char sp;
-    short int reg_i;
+    short reg_i;
     char mem[MEM_LENGTH];
     char v[V_LENGTH];
-    short int stack[STACK_LENGTH];
+    short stack[STACK_LENGTH];
+    bool keys[KEYS_LENGTH];
     bool screen[SCR_WIDTH * SCR_HEIGHT];
 };
 

@@ -123,6 +123,9 @@ void CHIP8::memory_init() {
     for (int i = 0; i < STACK_LENGTH; i++) {
         stack[i] = 0;
     }
+    for (int i = 0; i < KEYS_LENGTH; i++) {
+        keys[i] = false;
+    }
     for (int i = 0; i < SCR_WIDTH * SCR_HEIGHT; i++) {
         screen[i] = false;
     }
@@ -134,9 +137,13 @@ void CHIP8::memory_init() {
     reg_i = 0;
 }
 
-bool CHIP8::draw_pixel(int x, int y) {
+// The function wraps the pixel around the screen, and returns true if a pixel was erased via XOR
+bool CHIP8::draw_xor(int x, int y, bool pixel) {
+    x = x % SCR_WIDTH;
+    y = y % SCR_HEIGHT;
     bool current = screen[y * SCR_WIDTH + x];
-
+    screen[y * SCR_WIDTH + x] = pixel ^ current;
+    return (current && !(pixel ^ current));
 }
 
 void CHIP8::process_instruction() {
@@ -299,11 +306,125 @@ void CHIP8::process_instruction() {
         pc += 2;
     }
 
-    // DRW - Display a sprite of length fourth-nibble bytes, at coordinates (second-nibble register,
+    // DRW - Display a sprite of length fourth-nibble bytes from I, at coordinates (second-nibble register,
     // third-nibble register) by XORing it with the existing screen. VF is set to 1 if this causes
     // any pixels to be erased, otherwise 0. Sprites wrap around the screen
     else if ((inst & 0xF000) == 0xD000) {
+        // Load sprite data into a temporary array
         char n = (char)(inst & 0x000F);
+        char spriteArray[n];
+        for (int i = 0; i < n; i++) {
+            spriteArray[i] = mem[reg_i + i];
+        }
+        v[0xF] = 0;
+        int x = (inst & 0x0F00) >> 8;
+        int base_y = (inst & 0x00F0) >> 4;
 
+        // One iteration of this loop draws an 8-bit row of pixels to the screen
+        for (int y = base_y; y < base_y + n; y++) {
+            char spriteRow = spriteArray[y - base_y];
+
+            if (draw_xor(x, y, ((spriteRow & 0x80) >> 7) == 1))
+                v[0xF] = 1;
+            if (draw_xor(x + 1, y, ((spriteRow & 0x40) >> 6) == 1))
+                v[0xF] = 1;
+            if (draw_xor(x + 2, y, ((spriteRow & 0x20) >> 5) == 1))
+                v[0xF] = 1;
+            if (draw_xor(x + 3, y, ((spriteRow & 0x10) >> 4) == 1))
+                v[0xF] = 1;
+            if (draw_xor(x + 4, y, ((spriteRow & 0x08) >> 3) == 1))
+                v[0xF] = 1;
+            if (draw_xor(x + 5, y, ((spriteRow & 0x04) >> 2) == 1))
+                v[0xF] = 1;
+            if (draw_xor(x + 6, y, ((spriteRow & 0x02) >> 1) == 1))
+                v[0xF] = 1;
+            if (draw_xor(x + 7, y, (spriteRow & 0x01) == 1))
+                v[0xF] = 1;
+        }
+
+        pc += 2;
+    }
+
+    // SKP - Skip the next instruction if the second-nibble key is currently pressed
+    else if ((inst & 0xF0FF) == 0xE09E) {
+        if (keys[(inst & 0x0F00) >> 8])
+            pc += 4;
+        else
+            pc += 2;
+    }
+
+    // SKNP - Skip the next instruction if the second-nibble key is not pressed
+    else if ((inst & 0xF0FF) == 0xE0A1) {
+        if (!keys[(inst & 0x0F00) >> 8])
+            pc += 4;
+        else
+            pc += 2;
+    }
+
+    // LD DT - Set the second-nibble register to the value in the delay timer
+    else if ((inst & 0xF0FF) == 0xF007) {
+        v[(inst & 0x0F00) >> 8] = delayTimer;
+        pc += 2;
+    }
+
+    // LD K - Wait for any key press then store the value of the key in second-nibble register
+    else if ((inst & 0xF0FF) == 0xF00A) {
+        for (char i = 0; i < KEYS_LENGTH; i++) {
+            if (keys[i]) {
+                v[(inst & 0x0F00) >> 8] = i;
+                pc += 2;
+                break;
+            }
+            // If there is no key down we don't increment the PC so it stays on this instruction
+        }
+    }
+
+    // LD DT - Set the delay timer to the value in second-nibble register
+    else if ((inst & 0xF0FF) == 0xF015) {
+        delayTimer = v[(inst & 0x0F00) >> 8];
+        pc += 2;
+    }
+
+    // LD ST - Set the sound timer to the value in second-nibble register
+    else if ((inst & 0xF0FF) == 0xF018) {
+        soundTimer = v[(inst & 0x0F00) >> 8];
+        pc += 2;
+    }
+
+    // ADD I - Add the second-nibble register to I
+    else if ((inst & 0xF0FF) == 0xF01E) {
+        reg_i += v[(inst & 0x0F00) >> 8];
+        pc += 2;
+    }
+
+    // LD F - Set I to the location of the sprite representing character in second-nibble register
+    else if ((inst & 0xF0FF) == 0xF029) {
+        reg_i = (short)(((inst & 0x0F00) >> 8) * 5);
+        pc += 2;
+    }
+
+    // LD B - Store the BCD representation of second-nibble register in location I onwards
+    else if ((inst & 0xF0FF) == 0xF033) {
+        char number = (char)((inst & 0x0F00) >> 8);
+        mem[reg_i] = (char)(number / 100);
+        mem[reg_i + 1] = (char)((number % 100) / 10);
+        mem[reg_i + 2] = (char)(number % 10);
+        pc += 2;
+    }
+
+    // LD [I] - Store registers 0 to second nibble in memory starting at location I
+    else if ((inst & 0xF0FF) == 0xF055) {
+        for (int i = 0; i <= ((inst & 0x0F00) >> 8); i++) {
+            mem[reg_i + i] = v[i];
+        }
+        pc += 2;
+    }
+
+    // LD [I] - Store memory from location I in registers 0 to second nibble
+    else if ((inst & 0xF0FF) == 0xF065) {
+        for (int i = 0; i <= ((inst & 0x0F00) >> 8); i++) {
+            v[i] = mem[reg_i + i];
+        }
+        pc += 2;
     }
 }
