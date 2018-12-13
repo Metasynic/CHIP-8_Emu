@@ -1,9 +1,11 @@
 #include <SDL2/SDL.h>
 #include "CHIP8.h"
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
+/* This function creates all the SDL objects, and throws an error if something goes wrong. */
 bool sdl_init(SDL_Window* window, SDL_Renderer* renderer, int scale, int width, int height) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         cerr << "SDL_Init Error: " << SDL_GetError() << endl;
@@ -28,6 +30,7 @@ bool sdl_init(SDL_Window* window, SDL_Renderer* renderer, int scale, int width, 
 }
 
 int main(int argc, char *argv[]) {
+    /* Define the SDL objects and set other variables. Create the CHIP-8. */
     SDL_Window* window;
     SDL_Renderer* renderer;
     const int SCALE = 16;
@@ -42,6 +45,22 @@ int main(int argc, char *argv[]) {
 
     chip8->memory_init();
 
+    /* Now we sanitize the argument to make sure there's only one and it ends with ".ch8". */
+    if (argc != 2) {
+        cout << "Argument error. Supply the filename of the program as a single argument." << endl;
+        return -1;
+    }
+    string pr_name = argv[1];
+    if (pr_name.length() > 4 && (pr_name.substr(pr_name.length() - 5, 4) != ".ch8")) {
+        cout << "Argument error. The filename needs to end with \".ch8\"." << endl;
+        return -1;
+    }
+
+    /* CHIP-8 programs are loaded into memory between address 0x200 and 0xFFF. */
+    ifstream inBuffer(pr_name, ios::in | ios::binary);
+    chip8->load_program(inBuffer);
+
+    /* Main emulator loop: to do */
     while (!quit) {
         chip8->process_instruction();
 

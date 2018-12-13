@@ -3,7 +3,10 @@
 //
 
 #include <cstdlib>
+#include <fstream>
 #include "CHIP8.h"
+
+using namespace std;
 
 int CHIP8::getWidth() {
     return SCR_WIDTH;
@@ -144,6 +147,11 @@ bool CHIP8::draw_xor(int x, int y, bool pixel) {
     bool current = screen[y * SCR_WIDTH + x];
     screen[y * SCR_WIDTH + x] = pixel ^ current;
     return (current && !(pixel ^ current));
+}
+
+/* Load program from stream into memory: to do */
+void CHIP8::load_program(ifstream &inbuffer) {
+
 }
 
 void CHIP8::process_instruction() {

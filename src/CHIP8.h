@@ -2,14 +2,19 @@
 // Created by sam on 09/11/18.
 //
 
+#include <fstream>
+
 #ifndef CHIP_8_EMU_CHIP8_H
 #define CHIP_8_EMU_CHIP8_H
+
+using namespace std;
 
 class CHIP8 {
 public:
     int getWidth();
     int getHeight();
     void memory_init();
+    void load_program(ifstream &inbuffer);
     void process_instruction();
 private:
     bool draw_xor(int x, int y, bool pixel);
