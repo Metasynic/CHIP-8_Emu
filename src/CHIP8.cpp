@@ -3,6 +3,7 @@
 //
 
 #include <cstdlib>
+#include <iostream>
 #include <fstream>
 #include "CHIP8.h"
 
@@ -16,6 +17,8 @@ int CHIP8::getHeight() {
     return SCR_HEIGHT;
 }
 
+
+/* Initialize the interpreter-allocated memory with the data for each character. */
 void CHIP8::character_init() {
     mem[0] = (char)0xF0;
     mem[1] = (char)0x90;
@@ -114,6 +117,7 @@ void CHIP8::character_init() {
     mem[79] = (char)0x80;
 }
 
+/* Initialize the different parts of memory. PC begins at 0x200. */
 void CHIP8::memory_init() {
     character_init();
 
@@ -135,12 +139,12 @@ void CHIP8::memory_init() {
 
     delayTimer = 0;
     soundTimer = 0;
-    pc = 0;
+    pc = 0x200;
     sp = 0;
     reg_i = 0;
 }
 
-// The function wraps the pixel around the screen, and returns true if a pixel was erased via XOR
+/* The function wraps the pixel around the screen, and returns true if a pixel was erased via XOR */
 bool CHIP8::draw_xor(int x, int y, bool pixel) {
     x = x % SCR_WIDTH;
     y = y % SCR_HEIGHT;
@@ -149,9 +153,17 @@ bool CHIP8::draw_xor(int x, int y, bool pixel) {
     return (current && !(pixel ^ current));
 }
 
-/* Load program from stream into memory: to do */
+/* Load program from stream into memory. */
 void CHIP8::load_program(ifstream &inbuffer) {
-
+    short pointer = 0x200;
+    char buffer = 0;
+    while (inbuffer.read(&buffer, 1)) {
+        mem[pointer] = buffer;
+        buffer++;
+    }
+    if (pointer > 0xFFF) {
+        cerr << "WARNING: Program exceeds space allocated (past 0xFFF)." << endl;
+    }
 }
 
 void CHIP8::process_instruction() {

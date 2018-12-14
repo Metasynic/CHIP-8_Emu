@@ -39,6 +39,7 @@ int main(int argc, char *argv[]) {
 
     CHIP8* chip8 = new CHIP8();
 
+    /* Create the SDL objects and throw an error if this fails. */
     if (!sdl_init(window, renderer, SCALE, chip8->getWidth(), chip8->getHeight())) {
         return -1;
     }
@@ -51,7 +52,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
     string pr_name = argv[1];
-    if (pr_name.length() > 4 && (pr_name.substr(pr_name.length() - 5, 4) != ".ch8")) {
+    if (pr_name.length() > 4 && (pr_name.substr(pr_name.length() - 4, 4) != ".ch8")) {
         cout << "Argument error. The filename needs to end with \".ch8\"." << endl;
         return -1;
     }
@@ -60,15 +61,20 @@ int main(int argc, char *argv[]) {
     ifstream inBuffer(pr_name, ios::in | ios::binary);
     chip8->load_program(inBuffer);
 
-    /* Main emulator loop: to do */
     while (!quit) {
-        chip8->process_instruction();
-
         while(SDL_PollEvent(&event) != 0) {
             if(event.type == SDL_QUIT) {
                 quit = true;
             }
         }
+
+        chip8->process_instruction();
+
+        /* TODO: Decrease timers */
+
+        /* TODO: Process key input */
+
+        /* TODO: Draw screen */
     }
 
     return 0;
