@@ -167,7 +167,7 @@ void CHIP8::load_program(ifstream &inbuffer) {
 }
 
 void CHIP8::process_instruction() {
-    short int inst = mem[pc];
+    short int inst = (mem[pc] << 8) | mem[pc + 1];
     // Note: we increment the PC by 2 because the memory is an array of chars (1 byte),
     // and each instruction is 2 bytes
 
@@ -447,4 +447,22 @@ void CHIP8::process_instruction() {
         }
         pc += 2;
     }
+
+    else {
+        cerr << "Instruction" << inst << " not recognized." << endl;
+    }
+}
+
+/* The CHIP-8 decrements both its timers 60 times a second. */
+void CHIP8::decrement_timers() {
+    if (delayTimer > 0)
+        delayTimer--;
+
+    if (soundTimer > 0)
+        soundTimer--;
+}
+
+/* Return whether a pixel on the screen is filled in or not. */
+bool CHIP8::get_pixel(int x, int y) {
+    return screen[y * SCR_WIDTH + x];
 }

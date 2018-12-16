@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_audio.h>
 #include "CHIP8.h"
 #include <iostream>
 #include <fstream>
@@ -6,7 +7,7 @@
 using namespace std;
 
 /* This function creates all the SDL objects, and throws an error if something goes wrong. */
-bool sdl_init(SDL_Window* window, SDL_Renderer* renderer, int scale, int width, int height) {
+bool sdl_init(SDL_Window* window, SDL_Renderer* renderer, const int scale, const int width, const int height) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         cerr << "SDL_Init Error: " << SDL_GetError() << endl;
         return false;
@@ -29,6 +30,28 @@ bool sdl_init(SDL_Window* window, SDL_Renderer* renderer, int scale, int width, 
     return true;
 }
 
+/* Draw the screen. This should happen 60 times a second. */
+void draw_screen(CHIP8 &chip8, SDL_Renderer &renderer, const int scale, const int width, const int height) {
+    SDL_SetRenderDrawColor(&renderer, 0, 0, 0, 255);
+    SDL_RenderClear(&renderer);
+
+    SDL_SetRenderDrawColor(&renderer, 255, 255, 255, 255);
+    SDL_Rect rect;
+    rect.w = scale;
+    rect.h = scale;
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            if (chip8.get_pixel(x, y)) {
+                rect.x = x * scale;
+                rect.y = y * scale;
+                SDL_RenderFillRect(&renderer, &rect);
+            }
+        }
+    }
+
+    SDL_RenderPresent(&renderer);
+}
+
 int main(int argc, char *argv[]) {
     /* Define the SDL objects and set other variables. Create the CHIP-8. */
     SDL_Window* window;
@@ -37,14 +60,12 @@ int main(int argc, char *argv[]) {
     bool quit = false;
     SDL_Event event;
 
-    CHIP8* chip8 = new CHIP8();
+    CHIP8 chip8;
 
     /* Create the SDL objects and throw an error if this fails. */
-    if (!sdl_init(window, renderer, SCALE, chip8->getWidth(), chip8->getHeight())) {
+    if (!sdl_init(window, renderer, SCALE, chip8.getWidth(), chip8.getHeight())) {
         return -1;
     }
-
-    chip8->memory_init();
 
     /* Now we sanitize the argument to make sure there's only one and it ends with ".ch8". */
     if (argc != 2) {
@@ -58,8 +79,9 @@ int main(int argc, char *argv[]) {
     }
 
     /* CHIP-8 programs are loaded into memory between address 0x200 and 0xFFF. */
+    chip8.memory_init();
     ifstream inBuffer(pr_name, ios::in | ios::binary);
-    chip8->load_program(inBuffer);
+    chip8.load_program(inBuffer);
 
     while (!quit) {
         while(SDL_PollEvent(&event) != 0) {
@@ -68,13 +90,18 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        chip8->process_instruction();
+        chip8.process_instruction();
 
-        /* TODO: Decrease timers */
+        chip8.decrement_timers();
+
+        /* TODO: Buzzer */
 
         /* TODO: Process key input */
 
-        /* TODO: Draw screen */
+        draw_screen(chip8, *renderer, SCALE, chip8.getWidth(), chip8.getHeight());
+
+        /* Means the loop runs at about 60 Hz. */
+        SDL_Delay(16);
     }
 
     return 0;

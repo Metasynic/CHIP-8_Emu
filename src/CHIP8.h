@@ -16,6 +16,8 @@ public:
     void memory_init();
     void load_program(ifstream &inbuffer);
     void process_instruction();
+    void decrement_timers();
+    bool get_pixel(int x, int y);
 private:
     bool draw_xor(int x, int y, bool pixel);
     void character_init();
