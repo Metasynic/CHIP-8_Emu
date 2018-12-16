@@ -82,6 +82,7 @@ int main(int argc, char *argv[]) {
     chip8.memory_init();
     ifstream inBuffer(pr_name, ios::in | ios::binary);
     chip8.load_program(inBuffer);
+    inBuffer.close();
 
     while (!quit) {
         while(SDL_PollEvent(&event) != 0) {
