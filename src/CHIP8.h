@@ -18,6 +18,7 @@ public:
     void process_instruction();
     void decrement_timers();
     bool get_pixel(int x, int y);
+    void set_key(unsigned char index, bool pressed);
 private:
     bool draw_xor(int x, int y, bool pixel);
     void character_init();
@@ -30,12 +31,12 @@ private:
     static const int KEYS_LENGTH = 16;
     unsigned char delayTimer;
     unsigned char soundTimer;
-    short int pc;
+    unsigned short pc;
     unsigned char sp;
-    short reg_i;
+    unsigned short reg_i;
     unsigned char mem[MEM_LENGTH];
     unsigned char v[V_LENGTH];
-    short stack[STACK_LENGTH];
+    unsigned short stack[STACK_LENGTH];
     bool keys[KEYS_LENGTH];
     bool screen[SCR_WIDTH * SCR_HEIGHT];
 };

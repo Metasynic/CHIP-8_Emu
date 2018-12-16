@@ -537,3 +537,8 @@ void CHIP8::decrement_timers() {
 bool CHIP8::get_pixel(int x, int y) {
     return screen[y * SCR_WIDTH + x];
 }
+
+/* Set the key input on the CHIP-8. */
+void CHIP8::set_key(unsigned char index, bool pressed) {
+    keys[index] = pressed;
+}
