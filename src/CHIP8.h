@@ -28,13 +28,13 @@ private:
     static const int V_LENGTH = 16;
     static const int STACK_LENGTH = 16;
     static const int KEYS_LENGTH = 16;
-    char delayTimer;
-    char soundTimer;
+    unsigned char delayTimer;
+    unsigned char soundTimer;
     short int pc;
-    char sp;
+    unsigned char sp;
     short reg_i;
-    char mem[MEM_LENGTH];
-    char v[V_LENGTH];
+    unsigned char mem[MEM_LENGTH];
+    unsigned char v[V_LENGTH];
     short stack[STACK_LENGTH];
     bool keys[KEYS_LENGTH];
     bool screen[SCR_WIDTH * SCR_HEIGHT];

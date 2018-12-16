@@ -18,108 +18,108 @@ int CHIP8::getHeight() {
 }
 
 
-/* Initialize the interpreter-allocated memory with the data for each character. */
+/* Initialize the interpreter-allocated memory with the data for each unsigned character. */
 void CHIP8::character_init() {
-    mem[0] = (char)0xF0;
-    mem[1] = (char)0x90;
-    mem[2] = (char)0x90;
-    mem[3] = (char)0x90;
-    mem[4] = (char)0xF0;
+    mem[0] = (unsigned char)0xF0;
+    mem[1] = (unsigned char)0x90;
+    mem[2] = (unsigned char)0x90;
+    mem[3] = (unsigned char)0x90;
+    mem[4] = (unsigned char)0xF0;
 
-    mem[5] = (char)0x20;
-    mem[6] = (char)0x60;
-    mem[7] = (char)0x20;
-    mem[8] = (char)0x20;
-    mem[9] = (char)0x70;
+    mem[5] = (unsigned char)0x20;
+    mem[6] = (unsigned char)0x60;
+    mem[7] = (unsigned char)0x20;
+    mem[8] = (unsigned char)0x20;
+    mem[9] = (unsigned char)0x70;
 
-    mem[10] = (char)0xF0;
-    mem[11] = (char)0x10;
-    mem[12] = (char)0xF0;
-    mem[13] = (char)0x80;
-    mem[14] = (char)0xF0;
+    mem[10] = (unsigned char)0xF0;
+    mem[11] = (unsigned char)0x10;
+    mem[12] = (unsigned char)0xF0;
+    mem[13] = (unsigned char)0x80;
+    mem[14] = (unsigned char)0xF0;
 
-    mem[15] = (char)0xF0;
-    mem[16] = (char)0x10;
-    mem[17] = (char)0xF0;
-    mem[18] = (char)0x10;
-    mem[19] = (char)0xF0;
+    mem[15] = (unsigned char)0xF0;
+    mem[16] = (unsigned char)0x10;
+    mem[17] = (unsigned char)0xF0;
+    mem[18] = (unsigned char)0x10;
+    mem[19] = (unsigned char)0xF0;
 
-    mem[20] = (char)0x90;
-    mem[21] = (char)0x90;
-    mem[22] = (char)0xF0;
-    mem[23] = (char)0x10;
-    mem[24] = (char)0x10;
+    mem[20] = (unsigned char)0x90;
+    mem[21] = (unsigned char)0x90;
+    mem[22] = (unsigned char)0xF0;
+    mem[23] = (unsigned char)0x10;
+    mem[24] = (unsigned char)0x10;
 
-    mem[25] = (char)0xF0;
-    mem[26] = (char)0x80;
-    mem[27] = (char)0xF0;
-    mem[28] = (char)0x10;
-    mem[29] = (char)0xF0;
+    mem[25] = (unsigned char)0xF0;
+    mem[26] = (unsigned char)0x80;
+    mem[27] = (unsigned char)0xF0;
+    mem[28] = (unsigned char)0x10;
+    mem[29] = (unsigned char)0xF0;
 
-    mem[30] = (char)0xF0;
-    mem[31] = (char)0x80;
-    mem[32] = (char)0xF0;
-    mem[33] = (char)0x90;
-    mem[34] = (char)0xF0;
+    mem[30] = (unsigned char)0xF0;
+    mem[31] = (unsigned char)0x80;
+    mem[32] = (unsigned char)0xF0;
+    mem[33] = (unsigned char)0x90;
+    mem[34] = (unsigned char)0xF0;
 
-    mem[35] = (char)0xF0;
-    mem[36] = (char)0x10;
-    mem[37] = (char)0x20;
-    mem[38] = (char)0x40;
-    mem[39] = (char)0x40;
+    mem[35] = (unsigned char)0xF0;
+    mem[36] = (unsigned char)0x10;
+    mem[37] = (unsigned char)0x20;
+    mem[38] = (unsigned char)0x40;
+    mem[39] = (unsigned char)0x40;
 
-    mem[40] = (char)0xF0;
-    mem[41] = (char)0x90;
-    mem[42] = (char)0xF0;
-    mem[43] = (char)0x90;
-    mem[44] = (char)0xF0;
+    mem[40] = (unsigned char)0xF0;
+    mem[41] = (unsigned char)0x90;
+    mem[42] = (unsigned char)0xF0;
+    mem[43] = (unsigned char)0x90;
+    mem[44] = (unsigned char)0xF0;
 
-    mem[45] = (char)0xF0;
-    mem[46] = (char)0x90;
-    mem[47] = (char)0xF0;
-    mem[48] = (char)0x10;
-    mem[49] = (char)0xF0;
+    mem[45] = (unsigned char)0xF0;
+    mem[46] = (unsigned char)0x90;
+    mem[47] = (unsigned char)0xF0;
+    mem[48] = (unsigned char)0x10;
+    mem[49] = (unsigned char)0xF0;
 
-    mem[50] = (char)0xF0;
-    mem[51] = (char)0x90;
-    mem[52] = (char)0xF0;
-    mem[53] = (char)0x90;
-    mem[54] = (char)0x90;
+    mem[50] = (unsigned char)0xF0;
+    mem[51] = (unsigned char)0x90;
+    mem[52] = (unsigned char)0xF0;
+    mem[53] = (unsigned char)0x90;
+    mem[54] = (unsigned char)0x90;
 
-    mem[55] = (char)0xE0;
-    mem[56] = (char)0x90;
-    mem[57] = (char)0xE0;
-    mem[58] = (char)0x90;
-    mem[59] = (char)0xE0;
+    mem[55] = (unsigned char)0xE0;
+    mem[56] = (unsigned char)0x90;
+    mem[57] = (unsigned char)0xE0;
+    mem[58] = (unsigned char)0x90;
+    mem[59] = (unsigned char)0xE0;
 
-    mem[60] = (char)0xF0;
-    mem[61] = (char)0x80;
-    mem[62] = (char)0x80;
-    mem[63] = (char)0x80;
-    mem[64] = (char)0xF0;
+    mem[60] = (unsigned char)0xF0;
+    mem[61] = (unsigned char)0x80;
+    mem[62] = (unsigned char)0x80;
+    mem[63] = (unsigned char)0x80;
+    mem[64] = (unsigned char)0xF0;
 
-    mem[65] = (char)0xE0;
-    mem[66] = (char)0x90;
-    mem[67] = (char)0x90;
-    mem[68] = (char)0x90;
-    mem[69] = (char)0xE0;
+    mem[65] = (unsigned char)0xE0;
+    mem[66] = (unsigned char)0x90;
+    mem[67] = (unsigned char)0x90;
+    mem[68] = (unsigned char)0x90;
+    mem[69] = (unsigned char)0xE0;
 
-    mem[70] = (char)0xF0;
-    mem[71] = (char)0x80;
-    mem[72] = (char)0xF0;
-    mem[73] = (char)0x80;
-    mem[74] = (char)0xF0;
+    mem[70] = (unsigned char)0xF0;
+    mem[71] = (unsigned char)0x80;
+    mem[72] = (unsigned char)0xF0;
+    mem[73] = (unsigned char)0x80;
+    mem[74] = (unsigned char)0xF0;
 
-    mem[75] = (char)0xF0;
-    mem[76] = (char)0x80;
-    mem[77] = (char)0xF0;
-    mem[78] = (char)0x80;
-    mem[79] = (char)0x80;
+    mem[75] = (unsigned char)0xF0;
+    mem[76] = (unsigned char)0x80;
+    mem[77] = (unsigned char)0xF0;
+    mem[78] = (unsigned char)0x80;
+    mem[79] = (unsigned char)0x80;
 }
 
 /* Initialize the different parts of memory. PC begins at 0x200. */
 void CHIP8::memory_init() {
-    character_init();
+    unsigned character_init();
 
     for (int i = 80; i < MEM_LENGTH; i++) {
         mem[i] = 0;
@@ -170,10 +170,8 @@ void CHIP8::load_program(ifstream &inbuffer) {
 
 void CHIP8::process_instruction() {
     short int inst = (mem[pc] << 8) | mem[pc + 1];
-    // Note: we increment the PC by 2 because the memory is an array of chars (1 byte),
+    // Note: we increment the PC by 2 because the memory is an array of unsigned chars (1 byte),
     // and each instruction is 2 bytes
-
-    cout << "Executing instruction " << inst << " from " << pc << "." << endl;
 
     // CLS - Clear Display
     if (inst == 0x00E0) {
@@ -241,10 +239,10 @@ void CHIP8::process_instruction() {
 
     // LD - Load value in third and fourth nibbles into register in second nibble
     else if ((inst & 0xF000) == 0x6000) {
-        v[(inst & 0x0F00) >> 8] = (char)(inst & 0x00FF);
+        v[(inst & 0x0F00) >> 8] = (unsigned char)(inst & 0x00FF);
         pc += 2;
 
-        cout << "Load " << ((char)(inst & 0x00FF)) << " into register " << ((inst & 0x0F00) >> 8) << endl;
+        cout << "Load " << (inst & 0x00FF) << " into register " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // ADD - Add value in third and fourth nibbles to register in second nibble
@@ -252,7 +250,7 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] += inst & 0x00FF;
         pc += 2;
 
-        cout << "Add " << ((char)(inst & 0x00FF)) << " into register " << ((inst & 0x0F00) >> 8) << endl;
+        cout << "Add " << (inst & 0x00FF) << " into register " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // LD - Load value of register in third nibble into register in second nibble
@@ -291,8 +289,8 @@ void CHIP8::process_instruction() {
     // V[F] is used as the carry bit register
     else if ((inst & 0xF00F) == 0x8004) {
         int temp = v[(inst & 0x0F00) >> 8] + v[(inst & 0x00F0) >> 4];
-        v[0xF] = (temp > 0xFF) ? (char)1 : (char)0;
-        v[(inst & 0x0F00) >> 8] = (char)(temp & 0xFF);
+        v[0xF] = (temp > 0xFF) ? (unsigned char)1 : (unsigned char)0;
+        v[(inst & 0x0F00) >> 8] = (unsigned char)(temp & 0xFF);
         pc += 2;
 
         cout << "Add registers" << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first, V[F] carry" << endl;
@@ -302,8 +300,8 @@ void CHIP8::process_instruction() {
     // V[F] is used as the carry bit register
     else if ((inst & 0xF00F) == 0x8005) {
         int temp = v[(inst & 0x0F00) >> 8] - v[(inst & 0x00F0) >> 4];
-        v[0xF] = (temp > 0) ? (char)1 : (char)0;
-        v[(inst & 0x0F00) >> 8] = (char)(temp & 0xFF);
+        v[0xF] = (temp > 0) ? (unsigned char)1 : (unsigned char)0;
+        v[(inst & 0x0F00) >> 8] = (unsigned char)(temp & 0xFF);
         pc += 2;
 
         cout << "Sub registers" << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first, V[F] carry" << endl;
@@ -323,8 +321,8 @@ void CHIP8::process_instruction() {
     // V[F] is used as the carry bit register
     else if ((inst & 0xF00F) == 0x8007) {
         int temp = v[(inst & 0x00F0) >> 4] - v[(inst & 0x0F00) >> 8];
-        v[0xF] = (temp > 0) ? (char)1 : (char)0;
-        v[(inst & 0x0F00) >> 8] = (char)(temp & 0xFF);
+        v[0xF] = (temp > 0) ? (unsigned char)1 : (unsigned char)0;
+        v[(inst & 0x0F00) >> 8] = (unsigned char)(temp & 0xFF);
         pc += 2;
 
         cout << "Sub registers" << ((inst & 0x00F0) >> 4) << " and " << ((inst & 0x0F00) >> 8) << ", store in last, V[F] carry" << endl;
@@ -367,8 +365,8 @@ void CHIP8::process_instruction() {
     // RND - Generate a random byte, AND it with the last two nibbles of the instruction,
     // and store in the second-nibble register
     else if ((inst & 0xF000) == 0xC000) {
-        char random = (char)(rand() % 0xFF);
-        v[(inst & 0x0F00) >> 8] = (char)(random & (inst & 0x00FF));
+        unsigned char random = (unsigned char)(rand() % 0xFF);
+        v[(inst & 0x0F00) >> 8] = (unsigned char)(random & (inst & 0x00FF));
         pc += 2;
 
         cout << "Generate random byte AND " << (inst & 0x00FF) << " in register " << ((inst & 0x0F00) >> 8) << endl;
@@ -379,8 +377,8 @@ void CHIP8::process_instruction() {
     // any pixels to be erased, otherwise 0. Sprites wrap around the screen
     else if ((inst & 0xF000) == 0xD000) {
         // Load sprite data into a temporary array
-        char n = (char)(inst & 0x000F);
-        char spriteArray[n];
+        unsigned char n = (unsigned char)(inst & 0x000F);
+        unsigned char spriteArray[n];
         for (int i = 0; i < n; i++) {
             spriteArray[i] = mem[reg_i + i];
         }
@@ -390,7 +388,7 @@ void CHIP8::process_instruction() {
 
         // One iteration of this loop draws an 8-bit row of pixels to the screen
         for (int y = base_y; y < base_y + n; y++) {
-            char spriteRow = spriteArray[y - base_y];
+            unsigned char spriteRow = spriteArray[y - base_y];
 
             if (draw_xor(x, y, ((spriteRow & 0x80) >> 7) == 1))
                 v[0xF] = 1;
@@ -422,7 +420,7 @@ void CHIP8::process_instruction() {
         else
             pc += 2;
 
-        cout << "Skip if key " << ((inst & 0x0F00) >> 8) << "is down" << endl;
+        cout << "Skip if key " << ((inst & 0x0F00) >> 8) << " is down" << endl;
     }
 
     // SKNP - Skip the next instruction if the second-nibble key is not pressed
@@ -432,7 +430,7 @@ void CHIP8::process_instruction() {
         else
             pc += 2;
 
-        cout << "Skip if key " << ((inst & 0x0F00) >> 8) << "is up" << endl;
+        cout << "Skip if key " << ((inst & 0x0F00) >> 8) << " is up" << endl;
     }
 
     // LD DT - Set the second-nibble register to the value in the delay timer
@@ -445,7 +443,7 @@ void CHIP8::process_instruction() {
 
     // LD K - Wait for any key press then store the value of the key in second-nibble register
     else if ((inst & 0xF0FF) == 0xF00A) {
-        for (char i = 0; i < KEYS_LENGTH; i++) {
+        for (unsigned char i = 0; i < KEYS_LENGTH; i++) {
             if (keys[i]) {
                 v[(inst & 0x0F00) >> 8] = i;
                 pc += 2;
@@ -481,20 +479,20 @@ void CHIP8::process_instruction() {
         cout << "Add register " << ((inst & 0x0F00) >> 8) << " to I" << endl;
     }
 
-    // LD F - Set I to the location of the sprite representing character in second-nibble register
+    // LD F - Set I to the location of the sprite representing unsigned character in second-nibble register
     else if ((inst & 0xF0FF) == 0xF029) {
         reg_i = (short)(((inst & 0x0F00) >> 8) * 5);
         pc += 2;
 
-        cout << "Set I to location of character " << ((inst & 0x0F00) >> 8) << endl;
+        cout << "Set I to location of unsigned character " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // LD B - Store the BCD representation of second-nibble register in location I onwards
     else if ((inst & 0xF0FF) == 0xF033) {
-        char number = (char)((inst & 0x0F00) >> 8);
-        mem[reg_i] = (char)(number / 100);
-        mem[reg_i + 1] = (char)((number % 100) / 10);
-        mem[reg_i + 2] = (char)(number % 10);
+        unsigned char number = (unsigned char)((inst & 0x0F00) >> 8);
+        mem[reg_i] = (unsigned char)(number / 100);
+        mem[reg_i + 1] = (unsigned char)((number % 100) / 10);
+        mem[reg_i + 2] = (unsigned char)(number % 10);
         pc += 2;
 
         cout << "Store BCD for register " << ((inst & 0x0F00) >> 8) << "at location in I" << endl;
