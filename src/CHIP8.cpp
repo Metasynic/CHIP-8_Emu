@@ -119,7 +119,7 @@ void CHIP8::character_init() {
 
 /* Initialize the different parts of memory. PC begins at 0x200. */
 void CHIP8::memory_init() {
-    unsigned character_init();
+    character_init();
 
     for (int i = 80; i < MEM_LENGTH; i++) {
         mem[i] = 0;
@@ -169,7 +169,7 @@ void CHIP8::load_program(ifstream &inbuffer) {
 }
 
 void CHIP8::process_instruction() {
-    short int inst = (mem[pc] << 8) | mem[pc + 1];
+    unsigned short inst = (mem[pc] << 8) | mem[pc + 1];
     // Note: we increment the PC by 2 because the memory is an array of unsigned chars (1 byte),
     // and each instruction is 2 bytes
 
@@ -193,7 +193,7 @@ void CHIP8::process_instruction() {
 
     // JMP - Jump to instruction in last three nibbles
     else if ((inst & 0xF000) == 0x1000) {
-        pc = (short int)(inst & 0x0FFF);
+        pc = (unsigned short)(inst & 0x0FFF);
 
         cout << "Jump to " << (inst & 0x0FFF) << endl;
     }
@@ -202,7 +202,7 @@ void CHIP8::process_instruction() {
     else if ((inst & 0xF000) == 0x2000) {
         sp++;
         stack[sp] = pc;
-        pc = (short int)(inst & 0x0FFF);
+        pc = (unsigned short)(inst & 0x0FFF);
 
         cout << "Call subroutine at " << (inst & 0x0FFF) << endl;
     }
@@ -349,7 +349,7 @@ void CHIP8::process_instruction() {
 
     // LD I - Load the value represented by the last three nibbles into register I
     else if ((inst & 0xF000) == 0xA000) {
-        reg_i = (short int)(inst & 0x0FFF);
+        reg_i = (unsigned short)(inst & 0x0FFF);
         pc += 2;
 
         cout << "Load I with " << (inst & 0x0FFF) << endl;
@@ -357,7 +357,7 @@ void CHIP8::process_instruction() {
 
     // JMP V0 - Jump to location in last three nibbles plus the value of register V0
     else if ((inst & 0xF000) == 0xB000) {
-        pc = (short int)((inst & 0x0FFF) + v[0x0]);
+        pc = (unsigned short)((inst & 0x0FFF) + v[0x0]);
 
         cout << "Jump to " << (inst & 0x0FFF) << " plus V[0]" << endl;
     }
@@ -481,7 +481,7 @@ void CHIP8::process_instruction() {
 
     // LD F - Set I to the location of the sprite representing unsigned character in second-nibble register
     else if ((inst & 0xF0FF) == 0xF029) {
-        reg_i = (short)(((inst & 0x0F00) >> 8) * 5);
+        reg_i = (unsigned short)(((inst & 0x0F00) >> 8) * 5);
         pc += 2;
 
         cout << "Set I to location of unsigned character " << ((inst & 0x0F00) >> 8) << endl;
