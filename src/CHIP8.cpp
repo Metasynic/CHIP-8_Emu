@@ -18,7 +18,7 @@ int CHIP8::getHeight() {
 }
 
 
-/* Initialize the interpreter-allocated memory with the data for each unsigned character. */
+/* Initialize the interpreter-allocated memory with the data for each character. */
 void CHIP8::character_init() {
     mem[0] = (unsigned char)0xF0;
     mem[1] = (unsigned char)0x90;
@@ -266,7 +266,7 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] |= v[(inst & 0x00F0) >> 4];
         pc += 2;
 
-        cout << "Bitwise OR registers" << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
+        cout << "Bitwise OR registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
     }
 
     // AND - Bitwise AND of register in second and register in third nibbles, store result in second-nibble register
@@ -274,7 +274,7 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] &= v[(inst & 0x00F0) >> 4];
         pc += 2;
 
-        cout << "Bitwise AND registers" << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
+        cout << "Bitwise AND registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
     }
 
     // XOR - Bitwise XOR of register in second and register in third nibbles, store result in second-nibble register
@@ -282,7 +282,7 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] ^= v[(inst & 0x00F0) >> 4];
         pc += 2;
 
-        cout << "Bitwise XOR registers" << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
+        cout << "Bitwise XOR registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
     }
 
     // ADD - Addition of register in second and register in third nibbles, store result in second-nibble register
@@ -293,7 +293,7 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] = (unsigned char)(temp & 0xFF);
         pc += 2;
 
-        cout << "Add registers" << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first, V[F] carry" << endl;
+        cout << "Add registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first, V[F] carry" << endl;
     }
 
     // SUB - Subtraction of register in third from register in second nibbles, store result in second-nibble register
@@ -304,7 +304,7 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] = (unsigned char)(temp & 0xFF);
         pc += 2;
 
-        cout << "Sub registers" << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first, V[F] carry" << endl;
+        cout << "Sub registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first, V[F] carry" << endl;
     }
 
     // SHR - Shift register in second nibble one bit to the right, store least significant bit in V[F]
@@ -479,12 +479,12 @@ void CHIP8::process_instruction() {
         cout << "Add register " << ((inst & 0x0F00) >> 8) << " to I" << endl;
     }
 
-    // LD F - Set I to the location of the sprite representing unsigned character in second-nibble register
+    // LD F - Set I to the location of the sprite representing character in second-nibble register
     else if ((inst & 0xF0FF) == 0xF029) {
         reg_i = (unsigned short)(((inst & 0x0F00) >> 8) * 5);
         pc += 2;
 
-        cout << "Set I to location of unsigned character " << ((inst & 0x0F00) >> 8) << endl;
+        cout << "Set I to location of character " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // LD B - Store the BCD representation of second-nibble register in location I onwards
