@@ -6,30 +6,6 @@
 
 using namespace std;
 
-/* This function creates all the SDL objects, and throws an error if something goes wrong. */
-bool sdl_init(SDL_Window* window, SDL_Renderer* renderer, const int scale, const int width, const int height) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        cerr << "SDL_Init Error: " << SDL_GetError() << endl;
-        return false;
-    }
-
-    window = SDL_CreateWindow("CHIP-8_Emu", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width * scale, height * scale, SDL_WINDOW_SHOWN);
-    if (window == nullptr) {
-        cerr << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
-        SDL_Quit();
-        return false;
-    }
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (renderer == nullptr) {
-        cerr << "SDL_CreateRenderer Error: " << SDL_GetError() << endl;
-        SDL_Quit();
-        return false;
-    }
-
-    return true;
-}
-
 /* Draw the screen. This should happen 60 times a second. */
 void draw_screen(CHIP8 &chip8, SDL_Renderer &renderer, const int scale, const int width, const int height) {
     SDL_SetRenderDrawColor(&renderer, 0, 0, 0, 255);
@@ -173,7 +149,22 @@ int main(int argc, char *argv[]) {
     CHIP8 chip8;
 
     /* Create the SDL objects and throw an error if this fails. */
-    if (!sdl_init(window, renderer, SCALE, chip8.getWidth(), chip8.getHeight())) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        cerr << "SDL_Init Error: " << SDL_GetError() << endl;
+        return -1;
+    }
+
+    window = SDL_CreateWindow("CHIP-8_Emu", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, chip8.getWidth() * SCALE, chip8.getHeight() * SCALE, SDL_WINDOW_SHOWN);
+    if (window == nullptr) {
+        cerr << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
+        SDL_Quit();
+        return -1;
+    }
+
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (renderer == nullptr) {
+        cerr << "SDL_CreateRenderer Error: " << SDL_GetError() << endl;
+        SDL_Quit();
         return -1;
     }
 

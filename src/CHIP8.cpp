@@ -149,8 +149,8 @@ bool CHIP8::draw_xor(int x, int y, bool pixel) {
     x = x % SCR_WIDTH;
     y = y % SCR_HEIGHT;
     bool current = screen[y * SCR_WIDTH + x];
-    screen[y * SCR_WIDTH + x] = pixel ^ current;
-    return (current && !(pixel ^ current));
+    screen[y * SCR_WIDTH + x] = pixel != current;
+    return (current && pixel);
 }
 
 /* Load program from stream into memory. */
@@ -187,6 +187,7 @@ void CHIP8::process_instruction() {
     else if (inst == 0x00EE) {
         pc = stack[sp];
         sp--;
+        pc += 2;
 
         cout << "Return from subroutine" << endl;
     }
@@ -372,7 +373,7 @@ void CHIP8::process_instruction() {
         cout << "Generate random byte AND " << (inst & 0x00FF) << " in register " << ((inst & 0x0F00) >> 8) << endl;
     }
 
-    // DRW - Display a sprite of length fourth-nibble bytes from I, at coordinates (second-nibble register,
+    // DRW - Display a sprite of length fourth-nibble bytes from mem[I], at coordinates (second-nibble register,
     // third-nibble register) by XORing it with the existing screen. VF is set to 1 if this causes
     // any pixels to be erased, otherwise 0. Sprites wrap around the screen
     else if ((inst & 0xF000) == 0xD000) {
@@ -383,8 +384,8 @@ void CHIP8::process_instruction() {
             spriteArray[i] = mem[reg_i + i];
         }
         v[0xF] = 0;
-        int x = (inst & 0x0F00) >> 8;
-        int base_y = (inst & 0x00F0) >> 4;
+        int x = v[(inst & 0x0F00) >> 8];
+        int base_y = v[(inst & 0x00F0) >> 4];
 
         // One iteration of this loop draws an 8-bit row of pixels to the screen
         for (int y = base_y; y < base_y + n; y++) {
@@ -410,7 +411,7 @@ void CHIP8::process_instruction() {
 
         pc += 2;
 
-        cout << "Draw" << endl;
+        cout << "Draw " << (int)n << endl;
     }
 
     // SKP - Skip the next instruction if the second-nibble key is currently pressed
