@@ -1,6 +1,13 @@
+/*
+ * This program uses the "SDL2 Simple Audio" library by Jake Besworth (github.com/jakebesworth).
+ * In compliance with the Apache 2.0 License, the library has not been modified in any way.
+ * The library files are in the simple-sdl2-audio source folder.
+ */
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_audio.h>
 #include "CHIP8.h"
+#include "simple-sdl2-audio/audio.h"
 #include <iostream>
 #include <fstream>
 
@@ -154,6 +161,11 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+    if (SDL_Init(SDL_INIT_AUDIO) != 0) {
+        cerr << "SDL_Init Error: " << SDL_GetError() << endl;
+        return -1;
+    }
+
     window = SDL_CreateWindow("CHIP-8_Emu", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, chip8.getWidth() * SCALE, chip8.getHeight() * SCALE, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         cerr << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
@@ -185,6 +197,13 @@ int main(int argc, char *argv[]) {
     chip8.load_program(inBuffer);
     inBuffer.close();
 
+    /* Initialize the buzzer. We start the sound then pause it so we can unpause later. */
+    initAudio();
+    bool buzzing = false;
+    playMusic("Buzz.wav", SDL_MIX_MAXVOLUME);
+    pauseAudio();
+
+    /* The main operational loop. */
     while (!quit) {
         while(SDL_PollEvent(&event) != 0) {
             if (event.type == SDL_QUIT) {
@@ -198,18 +217,26 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        chip8.process_instruction();
+        if (chip8.get_sound_timer() > 0 && !buzzing) {
+            buzzing = true;
+            unpauseAudio();
+        }
+
+        if (chip8.get_sound_timer() == 0 && buzzing) {
+            buzzing = false;
+            pauseAudio();
+        }
 
         chip8.decrement_timers();
 
-        /* TODO: Buzzer */
+        chip8.process_instruction();
 
-        /* TODO: Fix drawing because it doesn't work */
         draw_screen(chip8, *renderer, SCALE, chip8.getWidth(), chip8.getHeight());
 
         /* Means the loop runs at about 60 Hz. */
         SDL_Delay(16);
     }
 
+    endAudio();
     return 0;
 }

@@ -17,6 +17,7 @@ int CHIP8::getHeight() {
     return SCR_HEIGHT;
 }
 
+#define DEBUG false
 
 /* Initialize the interpreter-allocated memory with the data for each character. */
 void CHIP8::character_init() {
@@ -162,7 +163,9 @@ void CHIP8::load_program(ifstream &inbuffer) {
         pointer++;
     }
 
-    cout << "Loaded " << pointer - 0x200 << " bytes of program." << endl;
+    if (DEBUG)
+        cout << "Loaded " << pointer - 0x200 << " bytes of program." << endl;
+
     if (pointer > 0xFFF) {
         cerr << "WARNING: Program exceeds space allocated (past 0xFFF)." << endl;
     }
@@ -180,7 +183,8 @@ void CHIP8::process_instruction() {
 
         pc += 2;
 
-        cout << "Clear Display" << endl;
+        if (DEBUG)
+            cout << "Clear Display" << endl;
     }
 
     // RET - Return from current subroutine
@@ -189,14 +193,16 @@ void CHIP8::process_instruction() {
         sp--;
         pc += 2;
 
-        cout << "Return from subroutine" << endl;
+        if (DEBUG)
+            cout << "Return from subroutine" << endl;
     }
 
     // JMP - Jump to instruction in last three nibbles
     else if ((inst & 0xF000) == 0x1000) {
         pc = (unsigned short)(inst & 0x0FFF);
 
-        cout << "Jump to " << (inst & 0x0FFF) << endl;
+        if (DEBUG)
+            cout << "Jump to " << (inst & 0x0FFF) << endl;
     }
 
     // CALL - Call subroutine in last three nibbles
@@ -205,7 +211,8 @@ void CHIP8::process_instruction() {
         stack[sp] = pc;
         pc = (unsigned short)(inst & 0x0FFF);
 
-        cout << "Call subroutine at " << (inst & 0x0FFF) << endl;
+        if (DEBUG)
+            cout << "Call subroutine at " << (inst & 0x0FFF) << endl;
     }
 
     // SE - Skip next instruction if register in second nibble is equal to third and fourth nibbles
@@ -215,7 +222,8 @@ void CHIP8::process_instruction() {
         else
             pc += 2;
 
-        cout << "Skip if register " << ((inst & 0x0F00) >> 8) << " is " << (inst & 0x00FF) << endl;
+        if (DEBUG)
+            cout << "Skip if register " << ((inst & 0x0F00) >> 8) << " is " << (inst & 0x00FF) << endl;
     }
 
     // SNE - Skip next instruction if register in second nibble is not equal to third and fourth nibbles
@@ -225,7 +233,8 @@ void CHIP8::process_instruction() {
         else
             pc += 2;
 
-        cout << "Skip if register " << ((inst & 0x0F00) >> 8) << " is not " << (inst & 0x00FF) << endl;
+        if (DEBUG)
+            cout << "Skip if register " << ((inst & 0x0F00) >> 8) << " is not " << (inst & 0x00FF) << endl;
     }
 
     // SE - Skip next instruction if register in second nibble is equal to register in third nibble
@@ -235,7 +244,8 @@ void CHIP8::process_instruction() {
         else
             pc += 2;
 
-        cout << "Skip if register " << ((inst & 0x0F00) >> 8) << " is register " << ((inst & 0x00F0) >> 4) << endl;
+        if (DEBUG)
+            cout << "Skip if register " << ((inst & 0x0F00) >> 8) << " is register " << ((inst & 0x00F0) >> 4) << endl;
     }
 
     // LD - Load value in third and fourth nibbles into register in second nibble
@@ -243,7 +253,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] = (unsigned char)(inst & 0x00FF);
         pc += 2;
 
-        cout << "Load " << (inst & 0x00FF) << " into register " << ((inst & 0x0F00) >> 8) << endl;
+        if (DEBUG)
+            cout << "Load " << (inst & 0x00FF) << " into register " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // ADD - Add value in third and fourth nibbles to register in second nibble
@@ -251,7 +262,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] += inst & 0x00FF;
         pc += 2;
 
-        cout << "Add " << (inst & 0x00FF) << " into register " << ((inst & 0x0F00) >> 8) << endl;
+        if (DEBUG)
+            cout << "Add " << (inst & 0x00FF) << " into register " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // LD - Load value of register in third nibble into register in second nibble
@@ -259,7 +271,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] = v[(inst & 0x00F0) >> 4];
         pc += 2;
 
-        cout << "Load value from register " << ((inst & 0x00F0) >> 4) << " into register " << ((inst & 0x0F00) >> 8) << endl;
+        if (DEBUG)
+            cout << "Load value from register " << ((inst & 0x00F0) >> 4) << " into register " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // OR - Bitwise OR of register in second and register in third nibbles, store result in second-nibble register
@@ -267,7 +280,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] |= v[(inst & 0x00F0) >> 4];
         pc += 2;
 
-        cout << "Bitwise OR registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
+        if (DEBUG)
+            cout << "Bitwise OR registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
     }
 
     // AND - Bitwise AND of register in second and register in third nibbles, store result in second-nibble register
@@ -275,7 +289,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] &= v[(inst & 0x00F0) >> 4];
         pc += 2;
 
-        cout << "Bitwise AND registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
+        if (DEBUG)
+            cout << "Bitwise AND registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
     }
 
     // XOR - Bitwise XOR of register in second and register in third nibbles, store result in second-nibble register
@@ -283,7 +298,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] ^= v[(inst & 0x00F0) >> 4];
         pc += 2;
 
-        cout << "Bitwise XOR registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
+        if (DEBUG)
+            cout << "Bitwise XOR registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first" << endl;
     }
 
     // ADD - Addition of register in second and register in third nibbles, store result in second-nibble register
@@ -294,7 +310,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] = (unsigned char)(temp & 0xFF);
         pc += 2;
 
-        cout << "Add registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first, V[F] carry" << endl;
+        if (DEBUG)
+            cout << "Add registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first, V[F] carry" << endl;
     }
 
     // SUB - Subtraction of register in third from register in second nibbles, store result in second-nibble register
@@ -305,7 +322,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] = (unsigned char)(temp & 0xFF);
         pc += 2;
 
-        cout << "Sub registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first, V[F] carry" << endl;
+        if (DEBUG)
+            cout << "Sub registers " << ((inst & 0x0F00) >> 8) << " and " << ((inst & 0x00F0) >> 4) << ", store in first, V[F] carry" << endl;
     }
 
     // SHR - Shift register in second nibble one bit to the right, store least significant bit in V[F]
@@ -314,7 +332,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] /= 2;
         pc += 2;
 
-        cout << "Right shift by one register " << ((inst & 0x0F00) >> 8) << ", V[F] stores LSB" << endl;
+        if (DEBUG)
+            cout << "Right shift by one register " << ((inst & 0x0F00) >> 8) << ", V[F] stores LSB" << endl;
     }
 
 
@@ -326,7 +345,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] = (unsigned char)(temp & 0xFF);
         pc += 2;
 
-        cout << "Sub registers" << ((inst & 0x00F0) >> 4) << " and " << ((inst & 0x0F00) >> 8) << ", store in last, V[F] carry" << endl;
+        if (DEBUG)
+            cout << "Sub registers" << ((inst & 0x00F0) >> 4) << " and " << ((inst & 0x0F00) >> 8) << ", store in last, V[F] carry" << endl;
     }
 
     // SHL - Shift register in second nibble one bit to the left, store most significant bit in V[F]
@@ -335,7 +355,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] *= 2;
         pc += 2;
 
-        cout << "Left shift by one register " << ((inst & 0x0F00) >> 8) << ", V[F] stores MSB" << endl;
+        if (DEBUG)
+            cout << "Left shift by one register " << ((inst & 0x0F00) >> 8) << ", V[F] stores MSB" << endl;
     }
 
     // SNE - Skip next instruction if second nibble register is not equal to third nibble register
@@ -345,7 +366,8 @@ void CHIP8::process_instruction() {
         else
             pc += 2;
 
-        cout << "Skip if register " << ((inst & 0x0F00) >> 8) << " not equal to register " << ((inst & 0x00F0) >> 4) << endl;
+        if (DEBUG)
+            cout << "Skip if register " << ((inst & 0x0F00) >> 8) << " not equal to register " << ((inst & 0x00F0) >> 4) << endl;
     }
 
     // LD I - Load the value represented by the last three nibbles into register I
@@ -353,14 +375,16 @@ void CHIP8::process_instruction() {
         reg_i = (unsigned short)(inst & 0x0FFF);
         pc += 2;
 
-        cout << "Load I with " << (inst & 0x0FFF) << endl;
+        if (DEBUG)
+            cout << "Load I with " << (inst & 0x0FFF) << endl;
     }
 
     // JMP V0 - Jump to location in last three nibbles plus the value of register V0
     else if ((inst & 0xF000) == 0xB000) {
         pc = (unsigned short)((inst & 0x0FFF) + v[0x0]);
 
-        cout << "Jump to " << (inst & 0x0FFF) << " plus V[0]" << endl;
+        if (DEBUG)
+            cout << "Jump to " << (inst & 0x0FFF) << " plus V[0]" << endl;
     }
 
     // RND - Generate a random byte, AND it with the last two nibbles of the instruction,
@@ -370,7 +394,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] = (unsigned char)(random & (inst & 0x00FF));
         pc += 2;
 
-        cout << "Generate random byte AND " << (inst & 0x00FF) << " in register " << ((inst & 0x0F00) >> 8) << endl;
+        if (DEBUG)
+            cout << "Generate random byte AND " << (inst & 0x00FF) << " in register " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // DRW - Display a sprite of length fourth-nibble bytes from mem[I], at coordinates (second-nibble register,
@@ -411,7 +436,8 @@ void CHIP8::process_instruction() {
 
         pc += 2;
 
-        cout << "Draw " << (int)n << endl;
+        if (DEBUG)
+            cout << "Draw " << (int)n << endl;
     }
 
     // SKP - Skip the next instruction if the second-nibble key is currently pressed
@@ -421,7 +447,8 @@ void CHIP8::process_instruction() {
         else
             pc += 2;
 
-        cout << "Skip if key " << ((inst & 0x0F00) >> 8) << " is down" << endl;
+        if (DEBUG)
+            cout << "Skip if key " << ((inst & 0x0F00) >> 8) << " is down" << endl;
     }
 
     // SKNP - Skip the next instruction if the second-nibble key is not pressed
@@ -431,7 +458,8 @@ void CHIP8::process_instruction() {
         else
             pc += 2;
 
-        cout << "Skip if key " << ((inst & 0x0F00) >> 8) << " is up" << endl;
+        if (DEBUG)
+            cout << "Skip if key " << ((inst & 0x0F00) >> 8) << " is up" << endl;
     }
 
     // LD DT - Set the second-nibble register to the value in the delay timer
@@ -439,7 +467,8 @@ void CHIP8::process_instruction() {
         v[(inst & 0x0F00) >> 8] = delayTimer;
         pc += 2;
 
-        cout << "Set register " << ((inst & 0x0F00) >> 8) << " to DT" << endl;
+        if (DEBUG)
+            cout << "Set register " << ((inst & 0x0F00) >> 8) << " to DT" << endl;
     }
 
     // LD K - Wait for any key press then store the value of the key in second-nibble register
@@ -453,7 +482,8 @@ void CHIP8::process_instruction() {
             // If there is no key down we don't increment the PC so it stays on this instruction
         }
 
-        cout << "Wait for key press and store in register " << ((inst & 0x0F00) >> 8) << endl;
+        if (DEBUG)
+            cout << "Wait for key press and store in register " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // LD DT - Set the delay timer to the value in second-nibble register
@@ -461,7 +491,8 @@ void CHIP8::process_instruction() {
         delayTimer = v[(inst & 0x0F00) >> 8];
         pc += 2;
 
-        cout << "Set DT to register " << ((inst & 0x0F00) >> 8) << endl;
+        if (DEBUG)
+            cout << "Set DT to register " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // LD ST - Set the sound timer to the value in second-nibble register
@@ -469,7 +500,8 @@ void CHIP8::process_instruction() {
         soundTimer = v[(inst & 0x0F00) >> 8];
         pc += 2;
 
-        cout << "Set ST to register " << ((inst & 0x0F00) >> 8) << endl;
+        if (DEBUG)
+            cout << "Set ST to register " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // ADD I - Add the second-nibble register to I
@@ -477,7 +509,8 @@ void CHIP8::process_instruction() {
         reg_i += v[(inst & 0x0F00) >> 8];
         pc += 2;
 
-        cout << "Add register " << ((inst & 0x0F00) >> 8) << " to I" << endl;
+        if (DEBUG)
+            cout << "Add register " << ((inst & 0x0F00) >> 8) << " to I" << endl;
     }
 
     // LD F - Set I to the location of the sprite representing character in second-nibble register
@@ -485,7 +518,8 @@ void CHIP8::process_instruction() {
         reg_i = (unsigned short)(((inst & 0x0F00) >> 8) * 5);
         pc += 2;
 
-        cout << "Set I to location of character " << ((inst & 0x0F00) >> 8) << endl;
+        if (DEBUG)
+            cout << "Set I to location of character " << ((inst & 0x0F00) >> 8) << endl;
     }
 
     // LD B - Store the BCD representation of second-nibble register in location I onwards
@@ -496,7 +530,8 @@ void CHIP8::process_instruction() {
         mem[reg_i + 2] = (unsigned char)(number % 10);
         pc += 2;
 
-        cout << "Store BCD for register " << ((inst & 0x0F00) >> 8) << "at location in I" << endl;
+        if (DEBUG)
+            cout << "Store BCD for register " << ((inst & 0x0F00) >> 8) << "at location in I" << endl;
     }
 
     // LD [I] - Store registers 0 to second nibble in memory starting at location I
@@ -506,7 +541,8 @@ void CHIP8::process_instruction() {
         }
         pc += 2;
 
-        cout << "Copy registers 0 to " << ((inst & 0x0F00) >> 8) << " to memory starting at value in I" << endl;
+        if (DEBUG)
+            cout << "Copy registers 0 to " << ((inst & 0x0F00) >> 8) << " to memory starting at value in I" << endl;
     }
 
     // LD [I] - Store memory from location I in registers 0 to second nibble
@@ -516,7 +552,8 @@ void CHIP8::process_instruction() {
         }
         pc += 2;
 
-        cout << "Copy registers 0 to " << ((inst & 0x0F00) >> 8) << " from memory starting at value in I" << endl;
+        if (DEBUG)
+            cout << "Copy registers 0 to " << ((inst & 0x0F00) >> 8) << " from memory starting at value in I" << endl;
     }
 
     else {
@@ -542,4 +579,8 @@ bool CHIP8::get_pixel(int x, int y) {
 /* Set the key input on the CHIP-8. */
 void CHIP8::set_key(unsigned char index, bool pressed) {
     keys[index] = pressed;
+}
+
+unsigned char CHIP8::get_sound_timer() {
+    return soundTimer;
 }

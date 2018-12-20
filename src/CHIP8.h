@@ -19,6 +19,7 @@ public:
     void decrement_timers();
     bool get_pixel(int x, int y);
     void set_key(unsigned char index, bool pressed);
+    unsigned char get_sound_timer();
 private:
     bool draw_xor(int x, int y, bool pixel);
     void character_init();

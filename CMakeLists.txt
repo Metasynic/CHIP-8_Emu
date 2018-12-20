@@ -3,7 +3,11 @@ project(CHIP_8_Emu)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(CHIP_8_Emu src/main.cpp src/CHIP8.h src/CHIP8.cpp)
+add_executable(CHIP_8_Emu src/main.cpp src/CHIP8.h src/CHIP8.cpp
+        src/simple-sdl2-audio/audio.h src/simple-sdl2-audio/audio.c)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/Buzz.wav
+        ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
