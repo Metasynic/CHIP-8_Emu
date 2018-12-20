@@ -35,6 +35,7 @@ void draw_screen(CHIP8 &chip8, SDL_Renderer &renderer, const int scale, const in
     SDL_RenderPresent(&renderer);
 }
 
+/* Process a key down event. */
 void key_down(CHIP8 &chip8, SDL_Event &event) {
     switch (event.key.keysym.sym) {
         case SDLK_1:
@@ -90,6 +91,7 @@ void key_down(CHIP8 &chip8, SDL_Event &event) {
     }
 }
 
+/* Process a key up event. */
 void key_up(CHIP8 &chip8, SDL_Event &event) {
     switch (event.key.keysym.sym) {
         case SDLK_1:
@@ -205,6 +207,7 @@ int main(int argc, char *argv[]) {
 
     /* The main operational loop. */
     while (!quit) {
+        /* Check for inputs or exit */
         while(SDL_PollEvent(&event) != 0) {
             if (event.type == SDL_QUIT) {
                 quit = true;
@@ -217,6 +220,7 @@ int main(int argc, char *argv[]) {
             }
         }
 
+        /* Process sound and timers */
         if (chip8.get_sound_timer() > 0 && !buzzing) {
             buzzing = true;
             unpauseAudio();
@@ -229,14 +233,17 @@ int main(int argc, char *argv[]) {
 
         chip8.decrement_timers();
 
+        /* Run one CPU cycle */
         chip8.process_instruction();
 
+        /* Draw to the screen */
         draw_screen(chip8, *renderer, SCALE, chip8.getWidth(), chip8.getHeight());
 
         /* Means the loop runs at about 60 Hz. */
         SDL_Delay(16);
     }
 
+    /* Clean up the audio library before exiting. */
     endAudio();
     return 0;
 }
